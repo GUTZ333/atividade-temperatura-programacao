@@ -21,7 +21,7 @@ function App() {
     setErro("");
 
     try {
-      const API_KEY = "bd5e378503939ddaee76f12ad7a97608";
+      const API_KEY = "50878f4678cd0841144b44b2fca0ccc0";
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid${API_KEY}&units=metric&lang=pt_br`;
       const resposta = await fetch(url);
 
@@ -39,9 +39,9 @@ function App() {
     }
   }; //fecha buscaClima()
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = async (e) => {
     if (e.key == "Enter") {
-      buscaClima();
+      await buscaClima();
     }
   };
 
@@ -59,44 +59,53 @@ function App() {
           <div className="busca-box">
             <div className="busca-container">
               <input type="text" placeholder="Digite o nome da cidade.." />
-              <button>Buscar</button>
+              <button onClick={handleKeyPress}>Buscar</button>
             </div>
           </div>
           {/* Resultado do Clima */}
-          <div id="card-resultado">
+          {clima && <>
+            <div id="card-resultado">
             <div id="cidade-info">
               <div id="cidade-nome">
                 <MapPinned style={{ color: "#550808ff" }} size={48} />
-                Campinas, BR
+                {clima.name}, {clima.sys.country}
               </div>
-              <p id="cidade-desc">Nublado</p>
+              <p id="cidade-desc">
+                {clima.weather[0].description}
+              </p>
             </div>{" "}
             {/* Fecha #cidade-desc*/}
             {/* Temperatura Principal */}
             <div id="temperatura-box">
-              <div id="temperatura-valor">22ºC</div>
-              <div id="sensacao">Sensação Térmica: 25ºC</div>
+              <div id="temperatura-valor">
+                {Math.round(clima.main.temp)} ºC
+              </div>
+              <div id="sensacao">Sensação Térmica: {Math.round(clima.main.feels_like)}ºC</div>
             </div>
             <div className="detalhes-box">
+
               <div className="detalhes-item">
                 <Thermometer style={{color: "azure"}} size={48}/>
                 <h2>Min/Max</h2>
-                <h3>23ºC / 26ºC</h3>
+                <h3>{Math.round(clima.main.temp_min)} ºC / {Math.round(clima.main.temp_max)} ºC</h3>
               </div>
+
               <div className="detalhes-item">
                 <Droplet style={{color: "azure"}} size={48} />
                 <h2>Umidade</h2>
-                <h3>10%</h3>
+                <h3>{clima.main.humidity} %</h3>
               </div>
+
               <div className="detalhes-item">
                 <Wind style={{color: "azure"}} size={48} />
                 <h2>vento</h2>
-                <h3>15 km/h</h3>
+                <h3>{Math.round(clima.win.speed * 3.6)} km/h</h3>
               </div>
             </div>
             {/* fecha a div detalhes-box */}
           </div>{" "}
           {/* Fecha #card-resultado */}
+          </>}
          
         </div>
       </div>
